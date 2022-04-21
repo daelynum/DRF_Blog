@@ -78,8 +78,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     # Временная метка показывающая время последнего обновления объекта.
     updated_at = models.DateTimeField(auto_now=True)
 
-    # Дополнительный поля, необходимые Django
-    # при указании кастомной модели пользователя.
+    # Кол-во постов пользователя (при добавлении буду делать +1)
+    count_of_posts = models.IntegerField(default=0, blank=True)
 
     # Свойство USERNAME_FIELD сообщает нам, какое поле мы будем использовать
     # для входа в систему. В данном случае мы хотим использовать почту.
@@ -111,10 +111,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         return self.username
 
-    def get_short_name(self):
-        """ Аналогично методу get_full_name(). """
-        return self.username
-
     def _generate_jwt_token(self):
         """
         Генерирует веб-токен JSON, в котором хранится идентификатор этого
@@ -126,3 +122,9 @@ class User(AbstractBaseUser, PermissionsMixin):
             'id': self.pk,
             'exp': int(dt.strftime('%s'))
         }, settings.SECRET_KEY, algorithm='HS256')
+
+    class Meta:
+        ordering = ['email', 'username']
+
+
+
