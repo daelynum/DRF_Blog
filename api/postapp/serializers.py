@@ -3,8 +3,11 @@ from .models import Post
 
 
 class PostSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'body', 'user']
+        fields = ['id', 'created', 'title', 'text', 'user']
+
+    # def create(self, validated_data):
+    #     return Post.objects.create(**validated_data)
+

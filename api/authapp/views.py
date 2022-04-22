@@ -4,8 +4,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .models import User
 from .renderers import UserJSONRenderer
-from .serializers import RegistrationSerializer, LoginSerializer, UserSerializer
+from .serializers import RegistrationSerializer, LoginSerializer, UserSerializer, UserInfoSerializer
 
 
 class RegistrationAPIView(APIView):
@@ -41,15 +42,16 @@ class LoginAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class UserRetrieveAPIView(RetrieveUpdateAPIView):
+class UserRetrieveAPIView(APIView):
     """
-        Разрешить доступ к данному эндпоинту только авторизованному пользователю.
+        Разрешить доступ к данному эндпоинту всем пользователям.
     """
-    permission_classes = (IsAuthenticated,)
-    renderer_classes = (UserJSONRenderer,)
-    serializer_class = UserSerializer
 
-    def retrieve(self, request, *args, **kwargs):
-        serializer = self.serializer_class(request.user)
+    permission_classes = (AllowAny,)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def get(self, request):
+        users = User.objects.all()
+        print(users)
+        serialized_users = UserInfoSerializer(users, many=True)
+
+        return Response({"users": serialized_users.data})

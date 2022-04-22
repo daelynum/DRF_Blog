@@ -110,3 +110,10 @@ class UserSerializer(serializers.ModelSerializer):
         # пароля требуются свойства min_length и max_length,
         # но это не относится к полю токена.
         read_only_fields = ('token',)
+
+
+class UserInfoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'count_of_posts']

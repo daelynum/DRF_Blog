@@ -4,7 +4,7 @@ from .views import RegistrationAPIView, LoginAPIView, UserRetrieveAPIView
 
 app_name = 'authapp'
 urlpatterns = [
-    path('users/', RegistrationAPIView.as_view()),
-    path('users/login/', LoginAPIView.as_view()),
-    path('user/', UserRetrieveAPIView.as_view()),
+    path('user/', RegistrationAPIView.as_view(), name='user'),
+    path('user/login/', LoginAPIView.as_view(), name='login'),
+    path('users/', UserRetrieveAPIView.as_view(), name='users'),
 ]
