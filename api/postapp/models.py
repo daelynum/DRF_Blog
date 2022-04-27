@@ -40,13 +40,14 @@ class ReadPosts(models.Model):
         return self.user
 
 
-class FavoriteUsers(models.Model):
-    main_user = models.ForeignKey(User, related_name='main_user', on_delete=models.CASCADE, null=True)
-    secondary_user = models.ForeignKey(User, related_name='secondary_user', on_delete=models.CASCADE, null=True)
+class FavoritePosts(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, null=True)
+    flagged_post = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name = 'Favorite user'
-        verbose_name_plural = 'Favorite users'
+        verbose_name = 'Favorite post'
+        verbose_name_plural = 'Favorite posts'
 
     def __str__(self):
-        return self.main_user
+        return self.id

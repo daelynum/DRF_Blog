@@ -127,4 +127,15 @@ class User(AbstractBaseUser, PermissionsMixin):
         ordering = ['email', 'username']
 
 
+class FavoriteUsers(models.Model):
+    main_user = models.ForeignKey(User, related_name='main_user', on_delete=models.CASCADE, null=True)
+    secondary_user = models.ForeignKey(User, related_name='secondary_user', on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        verbose_name = 'Favorite user'
+        verbose_name_plural = 'Favorite users'
+
+    def __str__(self):
+        return self.main_user
+
 

@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.generics import RetrieveUpdateAPIView, ListAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -42,16 +42,21 @@ class LoginAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class UserRetrieveAPIView(APIView):
+class UserRetrieveAPIView(ListAPIView):
     """
         Разрешить доступ к данному эндпоинту всем пользователям.
     """
-
+    serializer_class = UserInfoSerializer
     permission_classes = (AllowAny,)
 
-    def get(self, request):
-        users = User.objects.all()
-        print(users)
-        serialized_users = UserInfoSerializer(users, many=True)
-
-        return Response({"users": serialized_users.data})
+    # def get(self, request):
+    #     users = User.objects.order_by('-count_of_posts')
+    #     serialized_users = UserInfoSerializer(users, many=True)
+    #
+    #     return Response({"users": serialized_users.data})
+    def get_queryset(self):
+        queryset = User.objects.all()
+        count_of_posts = self.request.query_params.get('count_of_posts', None)
+        if count_of_posts is not None:
+            queryset = User.objects.order_by('-count_of_posts')
+        return queryset

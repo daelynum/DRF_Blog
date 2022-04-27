@@ -1,13 +1,14 @@
 from rest_framework import serializers
-from .models import Post
+from .models import Post, FavoritePosts
 
 
 class PostSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Post
         fields = ['id', 'created', 'title', 'text', 'user']
 
-    # def create(self, validated_data):
-    #     return Post.objects.create(**validated_data)
 
+class FavoritePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FavoritePosts
+        fields = '__all__'
