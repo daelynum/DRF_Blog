@@ -8,7 +8,7 @@ class AdminPost(admin.ModelAdmin):
 
 
 class AdminReadPost(admin.ModelAdmin):
-    list_display = ('user', 'post', 'read')
+    list_display = ('user', 'post', 'flagged_post')
 
 
 admin.site.register(Post, AdminPost)

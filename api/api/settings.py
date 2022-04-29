@@ -24,14 +24,21 @@ SECRET_KEY = 'django-insecure-*p1_ytn#f&f%s)u&a9-$wx*_itnuh6anhwx0wtxzkhno(5xv*4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'authapp.backends.JWTAuthentication',
     ),
-    'EXCEPTION_HANDLER': 'authapp.exceptions.core_exception_handler',
+    'EXCEPTION_HANDLER':
+        (
+            'authapp.exceptions.core_exception_handler',
+            'rest_framework.views.exception_handler'
+        ),
     'NON_FIELD_ERRORS_KEY': 'error',
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 50
 }
 
 # Application definition
@@ -48,8 +55,7 @@ INSTALLED_APPS = [
     'postapp.apps.PostappConfig',
 
     'rest_framework.authtoken',
-    'rest_framework_simplejwt'
-
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [

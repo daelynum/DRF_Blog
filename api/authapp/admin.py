@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from authapp.models import User, FavoriteUsers
+from authapp.models import User
 
 
 class AdminUser(admin.ModelAdmin):
@@ -12,4 +12,4 @@ class AdminFavoriteUser(admin.ModelAdmin):
 
 
 admin.site.register(User, AdminUser)
-admin.site.register(FavoriteUsers, AdminFavoriteUser)
+# admin.site.register(FavoriteUsers, AdminFavoriteUser)

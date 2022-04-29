@@ -130,12 +130,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 class FavoriteUsers(models.Model):
     main_user = models.ForeignKey(User, related_name='main_user', on_delete=models.CASCADE, null=True)
     secondary_user = models.ForeignKey(User, related_name='secondary_user', on_delete=models.CASCADE, null=True)
+    favorite_user = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Favorite user'
         verbose_name_plural = 'Favorite users'
 
     def __str__(self):
-        return self.main_user
-
-
+        return f"{self.main_user} | {self.secondary_user}"
