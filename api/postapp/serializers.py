@@ -22,3 +22,7 @@ class PostsFavUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['created', 'title', 'text', 'user_id']
+
+
+class CustomSerializer(serializers.Serializer):
+    pass

@@ -31,10 +31,8 @@ REST_FRAMEWORK = {
         'authapp.backends.JWTAuthentication',
     ),
     'EXCEPTION_HANDLER':
-        (
+
             'authapp.exceptions.core_exception_handler',
-            'rest_framework.views.exception_handler'
-        ),
     'NON_FIELD_ERRORS_KEY': 'error',
     'DEFAULT_PAGINATION_CLASS':
         'rest_framework.pagination.PageNumberPagination',
@@ -141,7 +139,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Расскаем Django о созданной нами кастомной модели пользователя. Строка
-# authentication.User сообщает Django, что мы ссылаемся на модель User в модуле
-# authentication.
 AUTH_USER_MODEL = 'authapp.User'
