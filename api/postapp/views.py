@@ -78,9 +78,3 @@ class PostListAuthorizedView(ListAPIView):
                 , [self.request.user.id])
             return cursor.fetchall()
         return Post.objects.all()
-
-
-"""prefetched_related подтягивает обьекты из др таблицы (сделать везде в get запросах)
-{'favorite_user': 'False', 'secondary_user': 'user1@user.user', 'main_user': 'vladimir@mail.ru'}"""
-# return FavoriteUsers.objects.filter(main_user=self.request.user.id).select_related('main_user')
-
