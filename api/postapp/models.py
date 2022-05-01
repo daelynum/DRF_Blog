@@ -30,23 +30,11 @@ def add_num_of_posts(sender, instance, **kwargs):
 class ReadPosts(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey('Post', on_delete=models.CASCADE, null=True)
-    read = models.BooleanField(default=False)
+    flagged_post = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Read post'
         verbose_name_plural = 'Read posts'
 
     def __str__(self):
-        return self.user
-
-
-class FavoriteUsers(models.Model):
-    main_user = models.ForeignKey(User, related_name='main_user', on_delete=models.CASCADE, null=True)
-    secondary_user = models.ForeignKey(User, related_name='secondary_user', on_delete=models.CASCADE, null=True)
-
-    class Meta:
-        verbose_name = 'Favorite user'
-        verbose_name_plural = 'Favorite users'
-
-    def __str__(self):
-        return self.main_user
+        return f'{self.user} | {self.post}'

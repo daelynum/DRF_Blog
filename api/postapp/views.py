@@ -1,29 +1,80 @@
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.views import APIView
+import psycopg2
+from django.db import connection
+from django.db.models import OuterRef, Subquery
+from psycopg2.extras import RealDictCursor
+from rest_framework.exceptions import ValidationError
+from rest_framework.generics import ListAPIView, UpdateAPIView, CreateAPIView
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from .models import Post
-from .serializers import PostSerializer
+from authapp.models import FavoriteUsers
+from .models import Post, ReadPosts
+from .paginations import MyOffsetPagination
+from .serializers import PostSerializer, ReadPostsSerializer, PostsFavUserSerializer
 
 
-class PostAddView(APIView):
+class PostAddView(CreateAPIView):
     permission_classes = (IsAuthenticated,)
+    serializer_class = PostSerializer
 
-    def get(self, request):
-        all_posts = Post.objects.all()
-        serialized_posts = PostSerializer(all_posts, many=True)
 
-        return Response({"posts": serialized_posts.data}, status=status.HTTP_200_OK)
+class PostListUnauthorizedView(ListAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = PostSerializer
 
-    def post(self, request):
-        post = {
-            "user": request.user.id,
-            "title": request.data.get("title"),
-            "text": request.data.get("text")
-        }
-        post_data = PostSerializer(data=post)
-        if post_data.is_valid(raise_exception=True):
-            post_data.save()
+    def get_queryset(self):
+        return Post.objects.order_by('-created')
 
-        return Response(post, status=status.HTTP_201_CREATED)
+
+class ReadPostsCreateView(CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ReadPostsSerializer
+
+    def post(self, request, *args, **kwargs):
+        if ReadPosts.objects.filter(post=request.data.get("post"), user=request.user.id).exists():
+            raise ValidationError("Post already flagged by this user as readed")
+        return self.create(request, *args, **kwargs)
+
+
+class PostListSubscriptionView(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = PostsFavUserSerializer
+    pagination_class = MyOffsetPagination
+
+    def get_queryset(self):
+        conn = psycopg2.connect('dbname=api')
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        cursor.execute(
+            """
+            SELECT created, title, text, user_id
+            FROM postapp_post
+            WHERE user_id IN (
+                SELECT secondary_user_id
+                FROM authapp_favoriteusers
+                WHERE main_user_id = %s
+                )
+                ORDER BY created DESC"""
+            , [self.request.user.id])
+        return cursor.fetchall()
+
+
+class PostListAuthorizedView(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        read_posts = self.request.query_params.get('read_posts', None)
+        if read_posts is not None:
+            conn = psycopg2.connect('dbname=api')
+            cursor = conn.cursor(cursor_factory=RealDictCursor)
+            cursor.execute(
+                """
+                SELECT created, title, text, user_id
+                FROM postapp_post
+                WHERE id IN (
+                    SELECT post_id
+                    FROM postapp_readposts
+                    WHERE user_id = %s
+                    ) """
+                , [self.request.user.id])
+            return cursor.fetchall()
+        return Post.objects.all()

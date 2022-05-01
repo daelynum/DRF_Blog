@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
-from .models import User
+from .models import User, FavoriteUsers
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -117,3 +117,11 @@ class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email', 'count_of_posts']
+
+
+class FavoriteUserSerializer(serializers.ModelSerializer):
+    main_user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = FavoriteUsers
+        fields = '__all__'
