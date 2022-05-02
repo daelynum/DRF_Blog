@@ -20,13 +20,6 @@ class Post(models.Model):
         return self.title
 
 
-@receiver(post_save, sender=Post)
-def add_num_of_posts(sender, instance, **kwargs):
-    user = instance.user
-    user.count_of_posts += 1
-    user.save()
-
-
 class ReadPosts(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     post = models.ForeignKey('Post', on_delete=models.CASCADE, null=True)
