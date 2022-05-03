@@ -1,12 +1,9 @@
 import psycopg2
-from django.db import connection
-from django.db.models import OuterRef, Subquery
 from psycopg2.extras import RealDictCursor
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListAPIView, UpdateAPIView, CreateAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from authapp.models import FavoriteUsers
 from .models import Post, ReadPosts
 from .paginations import MyOffsetPagination
 from .serializers import PostSerializer, ReadPostsSerializer, PostsFavUserSerializer
