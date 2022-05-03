@@ -8,5 +8,5 @@ urlpatterns = [
     path('user/login/', LoginAPIView.as_view(), name='login'),
     path('users/', UserRetrieveAPIView.as_view(), name='users'),
     path('users/favorite_user/', FavoriteUserView.as_view(), name='favorite_user'),
-    path('users/favorite_user_update/', FavoriteUserUpdateView.as_view(), name='favorite_user_update'),
+    path('users/favorite_user/update/', FavoriteUserUpdateView.as_view(), name='favorite_user_update'),
 ]

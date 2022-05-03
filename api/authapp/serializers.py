@@ -11,8 +11,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
         write_only=True
     )
 
-    # token = serializers.CharField(max_length=255, read_only=True)
-
     class Meta:
         model = User
         fields = ['email', 'username', 'password']
@@ -69,7 +67,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserInfoSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = ['username', 'email', 'count_of_posts']
