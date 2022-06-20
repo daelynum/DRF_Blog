@@ -1,4 +1,4 @@
-# WB_Blog_API
+# Blog_API
 
 ## An API for simple blog built with Django, Django Rest Framework with Postgres database.
 
